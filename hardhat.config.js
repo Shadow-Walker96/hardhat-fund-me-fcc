@@ -161,6 +161,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // */
 
 
+/*
 // 10:14:51 --> Mocking & helper-hardhat-config, i just splitted it jare
 // we make changes here to support more solidity versions
 
@@ -187,8 +188,58 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 /**
  * @type import('hardhat/config').HardhatUserConfig
  */
+// module.exports = {
+//   // solidity: "0.8.8",
+//   solidity: {
+//     compilers: [
+//       {version: "0.8.8"},
+//       { version: "0.6.6"}
+//     ]
+//   },
+//   defaultNetwork: "hardhat",
+//   networks: {
+//     ropsten: {
+//       url: process.env.ROPSTEN_URL || "",
+//       accounts:
+//         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+//     },
+//   },
+//   gasReporter: {
+//     enabled: process.env.REPORT_GAS !== undefined,
+//     currency: "USD",
+//   },
+//   etherscan: {
+//     apiKey: process.env.ETHERSCAN_API_KEY,
+//   },
+//   namedAccounts: {
+//     deployer: {
+//       default: 0,
+//     },
+//     users: {
+//       default: 1
+//     }
+//   }
+// };
+
+// */
+
+// 10:52:51 --> Testnet Demo
+// we added blockComfirmations: 6 in our network session, just like in the previous lesson
+// which will wait for etherscan to wait for the contract to be deployed
+
+require("dotenv").config();
+require("@nomiclabs/hardhat-etherscan");
+require("@nomiclabs/hardhat-waffle");
+require("hardhat-gas-reporter");
+require("solidity-coverage");
+require('hardhat-deploy');
+
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
+// const COINMARKET_API_KEY = process.env.COINMARKET_API_KEY
+
 module.exports = {
-  // solidity: "0.8.8",
   solidity: {
     compilers: [
       {version: "0.8.8"},
@@ -197,18 +248,22 @@ module.exports = {
   },
   defaultNetwork: "hardhat",
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    sepolia: {
+      url: SEPOLIA_RPC_URL,
+      accounts: [PRIVATE_KEY],
+      chainId: 11155111,
+      blockComfirmations: 6, // We waited 6 block so that it can be confirmed on etherscan
     },
   },
   gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
+    enabled: false, 
+    outputFile: "gas-report.txt", 
+    noColors: true,
     currency: "USD",
+    // coinmarketcap: COINMARKET_API_KEY
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: ETHERSCAN_API_KEY,
   },
   namedAccounts: {
     deployer: {

@@ -71,6 +71,9 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 }
 
 */
+
+/*
+
 // 10:14:51 --> Mocking & helper-hardhat-config, i just splitted it jare
 // instead of hardcoding our address from the oracle chain-link, we can use aave protocol to work with multiple different chains and addresses
 // like for example, we can expand the functionality of our chainId like below
@@ -132,6 +135,153 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 // -----------------------------------------------------
 // Done in 2.43s.
 
-// now when we run --> yarn hardhat node,  it will automatically add the transaction we have done before
+// now when we run --> yarn hardhat node,  hardhat will run throught all of our deploy script and add it to the node
+
+module.exports.tags = ["all", "fundme"]
+
+*/
+
+/*
+// Mocking & helper-hardhat-config, everything without the comments
+
+const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
+const { network } = require("hardhat")
+
+module.exports = async( { getNamedAccounts, deployments } ) => {
+    const { deploy, log } = deployments
+    const { deployer } = await getNamedAccounts()
+    const chainId = network.config.chainId
+
+    let ethUsdPriceFeedAddress
+
+    if (developmentChains.includes(network.name)) {
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        ethUsdPriceFeedAddress = ethUsdAggregator.address
+    } else {
+        ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+    }
+
+    const fundMe = await deploy("FundMe", {
+        from: deployer,
+        args: [ethUsdPriceFeedAddress], 
+        log: true,
+    })
+    log("-----------------------------------------------------")
+}
+
+module.exports.tags = ["all", "fundme"]
+
+*/
+
+/*
+
+// 10:52:51 --> Utils Folder
+// we want to verify our contract first but not with a local network
+// so we can create a folder called utils and a file verify.js, which will keep all our
+// verification code i.e verify script
+// we import our file from utils here 
+
+const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
+const { network } = require("hardhat")
+const { verify } = require("../utils/verify")
+
+module.exports = async( { getNamedAccounts, deployments } ) => {
+    const { deploy, log } = deployments
+    const { deployer } = await getNamedAccounts()
+    const chainId = network.config.chainId
+
+    let ethUsdPriceFeedAddress
+
+    if (developmentChains.includes(network.name)) {
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        ethUsdPriceFeedAddress = ethUsdAggregator.address
+    } else {
+        ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+    }
+
+    // Here we just created a variable to keep our ethUsdPriceFeedAddress
+    const args = [ethUsdPriceFeedAddress]
+
+    const fundMe = await deploy("FundMe", {
+        from: deployer,
+        args: args, 
+        log: true,
+    })
+    
+    // To verify our contract on etherscan
+    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+
+    } else {
+        await verify(fundMe.address, args)
+    }
+
+    log("-----------------------------------------------------")
+
+    // we have not deployed yet
+}
+
+module.exports.tags = ["all", "fundme"]
+
+*/
+
+// 10:52:51 --> Testnet Demo
+// Here we want to deploy it to sepolia test net
+// So we make some changes in our hardhat.config.js file
+// we added waitComfirmation 
+
+const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
+const { network } = require("hardhat")
+const { verify } = require("../utils/verify")
+
+module.exports = async( { getNamedAccounts, deployments } ) => {
+    const { deploy, log } = deployments
+    const { deployer } = await getNamedAccounts()
+    const chainId = network.config.chainId
+
+    let ethUsdPriceFeedAddress
+
+    if (developmentChains.includes(network.name)) {
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        ethUsdPriceFeedAddress = ethUsdAggregator.address
+    } else {
+        ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+    }
+
+    const args = [ethUsdPriceFeedAddress]
+
+    const fundMe = await deploy("FundMe", {
+        from: deployer,
+        args: args, 
+        log: true,
+        waitComfirmations: network.config.blockComfirmations || 1, // We added block confirmations for etherscan to get the contract deployed
+    })
+    
+    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+
+    } {
+        await verify(fundMe.address, args)
+    }
+
+    log("-----------------------------------------------------")
+
+    // when we run --> yarn hardhat deploy --network sepolia
+    // it displays this 
+
+    // Nothing to compile
+    // reusing "FundMe" at 0x82131ee1146aE8BC63a57C326323B362783f133C
+    // Verifying contract...
+    // (node:49480) ExperimentalWarning: stream/web is an experimental feature. This feature could change at any time
+    // (Use `node --trace-warnings ...` to show where the warning was created)
+    // Nothing to compile
+    // Successfully submitted source code for contract
+    // contracts/FundMe.sol:FundMe at 0x82131ee1146aE8BC63a57C326323B362783f133C
+    // for verification on the block explorer. Waiting for verification result...
+
+    // Successfully verified contract FundMe on Etherscan.
+    // https://sepolia.etherscan.io/address/0x82131ee1146aE8BC63a57C326323B362783f133C#code
+    // -----------------------------------------------------
+    // Done in 9.00s.
+
+}
 
 module.exports.tags = ["all", "fundme"]

@@ -1,4 +1,5 @@
 
+/*
 // 10:14:51 --> Mocking & helper-hardhat-config, i just splitted it jare
 // we want to deploy our own mocks to hardhat network since it dosent have a contract that has price feed in it
 // but we dont need to deploy mocks to sepolia and others bcos they already have price feeds in them
@@ -47,5 +48,32 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 // Mocks deployed!
 // --------------------------------------------------------
 // Done in 2.32s.
+
+module.exports.tags = ["all", "mocks"]
+
+*/
+
+// Mocking & helper-hardhat-config, this is everything without the comments
+
+const { network } = require("hardhat")
+const { developmentChains, DECIMALS, INITIAL_ANSWER } = require("../helper-hardhat-config")
+
+module.exports = async ({ getNamedAccounts, deployments }) => {
+    const { deploy, log } = deployments
+    const { deployer } = await getNamedAccounts()
+    
+    if(developmentChains.includes(network.name)){
+        log("Local network detected! Deploying mocks...") 
+        await deploy("MockV3Aggregator", {
+            contract: "MockV3Aggregator",
+            from: deployer,
+            log: true,
+            args: [ DECIMALS, INITIAL_ANSWER ],
+        })
+        log("Mocks deployed!")
+        log("--------------------------------------------------------")
+    }
+
+}
 
 module.exports.tags = ["all", "mocks"]
