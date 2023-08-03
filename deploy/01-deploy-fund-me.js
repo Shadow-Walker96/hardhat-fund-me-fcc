@@ -81,7 +81,7 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 // we created a file called helper-hardhat-config.js
 // we import const { networkConfig } = requires("../helper-hardhat-config.js")
 
-const { networkConfig } = requires("../helper-hardhat-config.js")
+const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
 const { network } = require("hardhat")
 
 module.exports = async( { getNamedAccounts, deployments } ) => {
@@ -89,7 +89,17 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
     const { deployer } = await getNamedAccounts()
     const chainId = network.config.chainId
 
-    const ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+    // const ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"] instead of creating a variable that stores the price feed in ethUsdPriceFeedAddress like this
+    // we can do this instead 
+    let ethUsdPriceFeedAddress
+
+    if (developmentChains.includes(network.name)) {
+        // we use the get method to get the most recent deployment
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        ethUsdPriceFeedAddress = ethUsdAggregator.address
+    } else {
+        ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+    }
 
     // Now we want to mock since our local network doesnt have a price feed that exist
     // so if the contract dosent exist, we deploy a minimal version of
@@ -104,7 +114,24 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 
     const fundMe = await deploy("FundMe", {
         from: deployer,
-        args: [address], 
+        args: [ethUsdPriceFeedAddress], 
         log: true,
     })
+    log("-----------------------------------------------------")
 }
+
+// Now when we run --> yarn hardhat deploy or yarn hardhat deploy --network sepolia 
+// Here is the result below 
+
+// Nothing to compile
+// Local network detected! Deploying mocks...
+// deploying "MockV3Aggregator" (tx: 0x712496f33ccbc8a51f6f8b5db572d0f3e4f8b3e4383c7c74e35c0c04e140ba4e)...: deployed at 0x5FbDB2315678afecb367f032d93F642f64180aa3 with 569635 gas
+// Mocks deployed!
+// --------------------------------------------------------
+// deploying "FundMe" (tx: 0x472a7e2ff90516edb5d50a22f3e376169a823e0370f1d46b03e23a85440651c9)...: deployed at 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 with 901264 gas
+// -----------------------------------------------------
+// Done in 2.43s.
+
+// now when we run --> yarn hardhat node,  it will automatically add the transaction we have done before
+
+module.exports.tags = ["all", "fundme"]
