@@ -12,7 +12,10 @@ describe("FundMe", async function () {
         // contract using hardhat-deploy
 
         const { deployer } = await getNamedAccounts() 
-        await deployments.fixture(["all"]) // .fixture means we can deploy script with the specific tags
+        // .fixture(["all"]) means that it will look at our deploy folder and deploy all the scripts inside
+        // i.e 00-deploy-mocks.js and 01-deploy-fund-me.js
+        await deployments.fixture(["all"])
+        
         fundMe = await ethers.getContract("FundMe", deployer) // .getContract get the most recent deployment contract
     })
 
@@ -40,6 +43,8 @@ describe("FundMe", async function () {
         deployer = (await getNamedAccounts()).deployer
         await deployments.fixture(["all"])
         fundMe = await ethers.getContract("FundMe", deployer)
+
+        // We need our MockV3Aggregator since we will deploy locally
         mockV3Aggregator = await ethers.getContract(
             "MockV3Aggregator",
             deployer

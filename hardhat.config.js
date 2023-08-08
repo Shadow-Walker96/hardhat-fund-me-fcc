@@ -42,7 +42,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 // */
 
-
 /*
 // 10:10:42 --> Hardhat Deploy
 // This hardhat-deploy adds a mechanism to deploy contracts to any network, keeping track of them 
@@ -103,7 +102,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 // */
 
-
 /*
 // 10:14:51 --> Mocking & helper-hardhat-config
 // we added defaultNetwork: "hardhat", which if we dont add it, it is added by behind the scene
@@ -159,7 +157,6 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // };
 
 // */
-
 
 /*
 // 10:14:51 --> Mocking & helper-hardhat-config, i just splitted it jare
@@ -227,12 +224,12 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 // we added blockComfirmations: 6 in our network session, just like in the previous lesson
 // which will wait for etherscan to wait for the contract to be deployed
 
-require("dotenv").config();
-require("@nomiclabs/hardhat-etherscan");
-require("@nomiclabs/hardhat-waffle");
-require("hardhat-gas-reporter");
-require("solidity-coverage");
-require('hardhat-deploy');
+require("dotenv").config()
+require("@nomiclabs/hardhat-etherscan")
+require("@nomiclabs/hardhat-waffle")
+require("hardhat-gas-reporter")
+require("solidity-coverage")
+require("hardhat-deploy")
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL
 const PRIVATE_KEY = process.env.PRIVATE_KEY
@@ -240,37 +237,34 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY
 // const COINMARKET_API_KEY = process.env.COINMARKET_API_KEY
 
 module.exports = {
-  solidity: {
-    compilers: [
-      {version: "0.8.8"},
-      { version: "0.6.6"}
-    ]
-  },
-  defaultNetwork: "hardhat",
-  networks: {
-    sepolia: {
-      url: SEPOLIA_RPC_URL,
-      accounts: [PRIVATE_KEY],
-      chainId: 11155111,
-      blockComfirmations: 6, // We waited 6 block so that it can be confirmed on etherscan
+    solidity: {
+        compilers: [{ version: "0.8.8" }, { version: "0.6.6" }],
     },
-  },
-  gasReporter: {
-    enabled: false, 
-    outputFile: "gas-report.txt", 
-    noColors: true,
-    currency: "USD",
-    // coinmarketcap: COINMARKET_API_KEY
-  },
-  etherscan: {
-    apiKey: ETHERSCAN_API_KEY,
-  },
-  namedAccounts: {
-    deployer: {
-      default: 0,
+    defaultNetwork: "hardhat",
+    networks: {
+        sepolia: {
+            url: SEPOLIA_RPC_URL,
+            accounts: [PRIVATE_KEY],
+            chainId: 11155111,
+            blockComfirmations: 6, // We waited 6 block so that it can be confirmed on etherscan
+        },
     },
-    users: {
-      default: 1
-    }
-  }
-};
+    gasReporter: {
+        enabled: false,
+        outputFile: "gas-report.txt",
+        noColors: true,
+        currency: "USD",
+        // coinmarketcap: COINMARKET_API_KEY
+    },
+    etherscan: {
+        apiKey: ETHERSCAN_API_KEY,
+    },
+    namedAccounts: {
+        deployer: {
+            default: 0,
+        },
+        users: {
+            default: 1,
+        },
+    },
+}

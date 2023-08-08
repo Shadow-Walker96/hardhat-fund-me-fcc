@@ -224,6 +224,8 @@ module.exports.tags = ["all", "fundme"]
 
 */
 
+/*
+
 // 10:52:51 --> Testnet Demo
 // Here we want to deploy it to sepolia test net
 // So we make some changes in our hardhat.config.js file
@@ -281,6 +283,50 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
     // https://sepolia.etherscan.io/address/0x82131ee1146aE8BC63a57C326323B362783f133C#code
     // -----------------------------------------------------
     // Done in 9.00s.
+
+}
+
+module.exports.tags = ["all", "fundme"]
+
+*/
+
+
+// 10:52:51 --> Testnet Demo, this is the same Testnet Demo but without comment
+
+const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
+const { network } = require("hardhat")
+const { verify } = require("../utils/verify")
+
+module.exports = async( { getNamedAccounts, deployments } ) => {
+    const { deploy, log } = deployments
+    const { deployer } = await getNamedAccounts()
+    const chainId = network.config.chainId
+
+    let ethUsdPriceFeedAddress
+
+    if (developmentChains.includes(network.name)) {
+        const ethUsdAggregator = await deployments.get("MockV3Aggregator")
+        ethUsdPriceFeedAddress = ethUsdAggregator.address
+    } else {
+        ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+    }
+
+    const args = [ethUsdPriceFeedAddress]
+
+    const fundMe = await deploy("FundMe", {
+        from: deployer,
+        args: args, 
+        log: true,
+        waitComfirmations: network.config.blockComfirmations || 1, 
+    })
+    
+    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+
+    } {
+        await verify(fundMe.address, args)
+    }
+
+    log("-----------------------------------------------------")
 
 }
 
