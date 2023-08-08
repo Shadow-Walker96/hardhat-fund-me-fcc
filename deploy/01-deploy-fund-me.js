@@ -97,7 +97,7 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
     let ethUsdPriceFeedAddress
 
     if (developmentChains.includes(network.name)) {
-        // we use the get method to get the most recent deployment
+        // we use the get method i.e `.get("MockV3Aggregator")` to get the most recent deployment
         const ethUsdAggregator = await deployments.get("MockV3Aggregator")
         ethUsdPriceFeedAddress = ethUsdAggregator.address
     } else {
@@ -141,7 +141,7 @@ module.exports.tags = ["all", "fundme"]
 
 */
 
-/*
+
 // Mocking & helper-hardhat-config, everything without the comments
 
 const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
@@ -158,7 +158,7 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
         const ethUsdAggregator = await deployments.get("MockV3Aggregator")
         ethUsdPriceFeedAddress = ethUsdAggregator.address
     } else {
-        ethUsdPriceFeedAddress =networkConfig[chainId]["ethUsdPriceFeed"]
+        ethUsdPriceFeedAddress = networkConfig[chainId]["ethUsdPriceFeed"]
     }
 
     const fundMe = await deploy("FundMe", {
@@ -167,11 +167,24 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
         log: true,
     })
     log("-----------------------------------------------------")
+
+    // when we run --> yarn hardhat deploy 
+    // it deploys all the scripts in the deploy folder i.e both 00-deploy-mocks.js and 01-deploy-fund-me.js
+    // it displays 
+
+    // Nothing to compile
+    // Local network detected! Deploying mocks...
+    // deploying "MockV3Aggregator" (tx: 0x712496f33ccbc8a51f6f8b5db572d0f3e4f8b3e4383c7c74e35c0c04e140ba4e)...: deployed at 0x5FbDB2315678afecb367f032d93F642f64180aa3 with 569635 gas
+    // Mocks deployed!
+    // --------------------------------------------------------
+    // deploying "FundMe" (tx: 0x2400bba034db655fe903a8db23247219b219c0a7b0476a39106a7d278809b7cb)...: deployed at 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 with 877739 gas
+    // -----------------------------------------------------
+    // Done in 2.04s.
 }
 
 module.exports.tags = ["all", "fundme"]
 
-*/
+
 
 /*
 
@@ -290,7 +303,7 @@ module.exports.tags = ["all", "fundme"]
 
 */
 
-
+/*
 // 10:52:51 --> Testnet Demo, this is the same Testnet Demo but without comment
 
 const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
@@ -331,3 +344,5 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 }
 
 module.exports.tags = ["all", "fundme"]
+
+*/
