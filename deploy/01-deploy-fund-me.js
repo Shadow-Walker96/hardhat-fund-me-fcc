@@ -141,6 +141,7 @@ module.exports.tags = ["all", "fundme"]
 
 */
 
+/*
 
 // Mocking & helper-hardhat-config, everything without the comments
 
@@ -184,7 +185,7 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 
 module.exports.tags = ["all", "fundme"]
 
-
+*/
 
 /*
 
@@ -228,7 +229,7 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
         await verify(fundMe.address, args)
     }
 
-    log("-----------------------------------------------------")
+    log("----------------------------------------------------------------")
 
     // we have not deployed yet
 }
@@ -279,7 +280,7 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 
     log("-----------------------------------------------------")
 
-    // when we run --> yarn hardhat deploy --network sepolia
+    // when we run --> yarn hardhat deploy --network sepolia or yarn hardhat deploy --network sepolia --tags fundme
     // it displays this 
 
     // Nothing to compile
@@ -303,7 +304,7 @@ module.exports.tags = ["all", "fundme"]
 
 */
 
-/*
+
 // 10:52:51 --> Testnet Demo, this is the same Testnet Demo but without comment
 
 const { networkConfig, developmentChains } = require("../helper-hardhat-config.js")
@@ -345,4 +346,3 @@ module.exports = async( { getNamedAccounts, deployments } ) => {
 
 module.exports.tags = ["all", "fundme"]
 
-*/
